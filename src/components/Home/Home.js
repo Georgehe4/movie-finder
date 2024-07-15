@@ -31,17 +31,26 @@ class Home extends Component {
     }
   }
 
-  searchItems = async (searchTerm) => {
+  searchItems = async (searchTerm, searchStartDate, searchEndDate) => {
     let endpoint = "";
     this.setState({
       movies: [],
       loading: true,
       searchTerm: searchTerm,
+      searchStartDate: searchStartDate,
+      searchEndDate: searchEndDate,
     });
-    if (searchTerm === "") {
+    if (searchTerm === "" && searchStartDate === "" && searchEndDate === "") {
       endpoint = `${API_URL}movie/popular?api_key=${API_KEY}&language=en-US&page=1`;
     } else {
-      endpoint = `${API_URL}search/movie?api_key=${API_KEY}&language=en-US&query=${searchTerm}`;
+      if (searchStartDate) {
+        searchStartDate = new Date(searchStartDate).toISOString().split('T')[0];
+      }
+      if (searchEndDate) {
+        searchEndDate = new Date(searchEndDate).toISOString().split('T')[0];
+      }
+      // TODO: Update API. Discover does not take a query string
+      endpoint = `${API_URL}discover/movie?api_key=${API_KEY}&language=en-US&query=${searchTerm}&primary_release_date.gte=${searchStartDate}&primary_release_date.lte=${searchEndDate}`;
     }
 
     this.fetchItems(endpoint);
@@ -69,6 +78,7 @@ class Home extends Component {
       endpoint = `${API_URL}movie/popular?api_key=${API_KEY}&language=en-US&page=${this.state.currentPage + 1
         }`;
     } else {
+      // TODO: Update API to use time based search
       endpoint = `${API_URL}search/movie?api_key=${API_KEY}&language=en-US&query=${this.state.searchTerm
         }&pages=${this.state.currentPage + 1}`;
     }

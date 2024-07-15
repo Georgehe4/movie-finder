@@ -13,6 +13,8 @@ const _state = {
     currentPage: 0,
     totalPages: 0,
     searchTerm: "",
+    searchStartDate: "",
+    searchEndDate: "",
   },
   movie: {},
 };
